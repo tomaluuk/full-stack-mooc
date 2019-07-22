@@ -12,7 +12,7 @@ const anecdotes = ['If it hurts, do it more often',
 const App = (props) => {
   const [selected, setSelected] = useState(0)
   const [points, setPoints] = useState(new Array(props.anecdotes.length).fill(0))
-
+  const [mostPop, setMostPop] = useState(0)
   // const points = new Array(anecdotes.length).fill(0)
 
   const handleClick = () => {  
@@ -23,16 +23,27 @@ const App = (props) => {
     const copy = [...points]
     copy[selected] += 1
     setPoints(copy)
+    
     console.log(copy)
+    
+    if (copy[selected] > copy[mostPop]) {
+      setMostPop(selected)
+    }
   }
 
   return (
     <div>
       <h1>Software development anecdotes</h1>
+      
       <p>{props.anecdotes[selected]}</p>
       <p>Number of votes received {points[selected]}</p>
+      
       <button onClick={handleClick}>Next anecdote</button>
       <button onClick={() => handleVote(selected)}>Vote</button>
+
+      <h1>Most popular anecdote</h1>
+      <p>{props.anecdotes[mostPop]}</p>
+      <h2>With {points[mostPop]} points</h2>
     </div>
   )
 }
