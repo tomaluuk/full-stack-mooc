@@ -38,7 +38,7 @@ const App = () => {
 
   const shownContacts = showAll 
     ? contacts 
-    : contacts.filter(contact => contact.name.search(searchQuery) >= 0)
+    : contacts.filter(contact => contact.name.toLowerCase().search(searchQuery.toLowerCase()) >= 0)
 
   const handleName = (event) => {
     //console.log(event.target.value)
@@ -51,15 +51,8 @@ const App = () => {
   }
 
   const handleSearchQuery = (event) => {
-    console.log(event.target.value)
+    //console.log(event.target.value)
     setSearchQuery(event.target.value)
-  }
-
-  const handleSearch = (event) => {
-    event.preventDefault()
-    console.log(searchQuery)
-    console.log(searchQuery === '')
-    
     setShowAll(searchQuery === '')
 
   }
@@ -73,10 +66,9 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <form onSubmit={handleSearch}>
-        <div><input onChange={handleSearchQuery} /></div>
-        <div><button type="submit">search</button></div>
-      </form>
+      <div>Search contacts: <br />
+        <input onChange={handleSearchQuery} />
+      </div>
       <h2>Add a new contact</h2>
       <form onSubmit={addContact}>
         <div> name: <input onChange={handleName} /></div>
