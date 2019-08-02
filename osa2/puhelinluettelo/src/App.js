@@ -1,12 +1,15 @@
 import React, { useState } from 'react'
 import Name from './Name';
+import Search from './Search';
+import NewContactForm from './NewContactForm';
+import Contacts from './Contacts';
 
 const App = () => {
-  const [ contacts, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040 654 9871', id: 'Arto Hellas' },
-    { name: 'Ada Lovelace', number: '39-44-5323523', id: 'Ada Lovelace' },
-    { name: 'Dan Abramov', number: '12-43-234345', id: 'Dan Abramov' },
-    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 'Mary Poppendieck' }
+  const [ contacts, setContacts] = useState([
+    { name: 'Arto Hellas', number: '040 654 9871' },
+    { name: 'Ada Lovelace', number: '39-44-5323523' },
+    { name: 'Dan Abramov', number: '12-43-234345' },
+    { name: 'Mary Poppendieck', number: '39-23-6423122' }
   ]) 
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
@@ -19,7 +22,6 @@ const App = () => {
     const newListObject = {
       name: newName,
       number: newNumber,
-      id: newName
     }
     
     const isDuplicate = contacts.find( (nameInList) => {      
@@ -27,11 +29,12 @@ const App = () => {
     }) 
     
     if(!isDuplicate) {
-      setPersons(contacts.concat(newListObject))
+      setContacts(contacts.concat(newListObject))
       
       console.log('nimi lisätty luetteloon')
       console.log('form submitted', event.target)     
-      // setNewName('')
+      setNewName('')
+      setNewNumber('')
     }
     else alert(`${newName} on jo puhelinluettelossa`)
   }
@@ -54,11 +57,10 @@ const App = () => {
     //console.log(event.target.value)
     setSearchQuery(event.target.value)
     setShowAll(searchQuery === '')
-
   }
 
   const rows = () => shownContacts.map( person => 
-    <Name key={person.id} 
+    <Name key={person.name} 
           name={person.name} 
           number={person.number} />
   )
@@ -66,19 +68,11 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <div>Search contacts: <br />
-        <input onChange={handleSearchQuery} />
-      </div>
-      <h2>Add a new contact</h2>
-      <form onSubmit={addContact}>
-        <div> name: <input onChange={handleName} /></div>
-        <div>number: <input onChange={handleNumber} /></div>
-        <div><button type="submit">add</button></div>
-      </form>
-      <h2>Numbers</h2>
-      <ul>
-        {rows()}
-      </ul>
+      <Search searchHandler={handleSearchQuery} />
+      <h3>Add a new contact</h3>
+      <NewContactForm nameHandler={handleName} numberHandler={handleNumber} addContact={addContact}/>
+      <h3>Numbers</h3>
+      <Contacts rows={rows} />
     </div>
   )
 
