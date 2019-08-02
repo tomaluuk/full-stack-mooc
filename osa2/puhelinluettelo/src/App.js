@@ -5,24 +5,25 @@ const App = () => {
   const [ persons, setPersons] = useState([
     { 
       name: 'Arto Hellas',
+      number: '040 654 9871',
       id: 'Arto Hellas' 
     }
   ]) 
   const [ newName, setNewName ] = useState('')
+  const [ newNumber, setNewNumber ] = useState('')
 
-  const addName = (event) => {
+  const addContact = (event) => {
     event.preventDefault()
-    
-    // const newId = persons.length + 1
+
     const newListObject = {
       name: newName,
+      number: newNumber,
       id: newName
     }
     
     const isDuplicate = persons.find( (nameInList) => {      
       return nameInList.id === newListObject.id
     }) 
-    console.log(isDuplicate)
     
     if(!isDuplicate) {
       setPersons(persons.concat(newListObject))
@@ -34,23 +35,29 @@ const App = () => {
     else alert(`${newName} on jo puhelinluettelossa`)
   }
 
-  const handleTyping = (event) => {
-    console.log(event.target.value)
+  const handleName = (event) => {
+    //console.log(event.target.value)
     setNewName(event.target.value)
   }
 
+  const handleNumber = (event) => {
+    //console.log(event.target.value)
+    setNewNumber(event.target.value)
+  }
+
   const rows = () => persons.map( person => 
-    <Name key={person.id} name={person.name} />
+    <Name key={person.id} 
+          name={person.name} 
+          number={person.number} />
   )
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <form onSubmit={addName}>
-        <div>
-          name: <input onChange={handleTyping} />
-          <button type="submit">add</button>
-        </div>
+      <form onSubmit={addContact}>
+        <div> name: <input onChange={handleName} /></div>
+        <div>number: <input onChange={handleNumber} /></div>
+        <div><button type="submit">add</button></div>
       </form>
       <h2>Numbers</h2>
       <ul>
