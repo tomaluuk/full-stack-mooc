@@ -12,16 +12,26 @@ const App = () => {
 
   const addName = (event) => {
     event.preventDefault()
-    console.log('form submitted', event.target)
-
+    
     // const newId = persons.length + 1
     const newListObject = {
       name: newName,
       id: newName
     }
-    setPersons(persons.concat(newListObject))
-    console.log(persons.concat(newListObject))
-
+    
+    const isDuplicate = persons.find( (nameInList) => {      
+      return nameInList.id === newListObject.id
+    }) 
+    console.log(isDuplicate)
+    
+    if(!isDuplicate) {
+      setPersons(persons.concat(newListObject))
+      
+      console.log('nimi lisätty luetteloon')
+      console.log('form submitted', event.target)     
+      // setNewName('')
+    }
+    else alert(`${newName} on jo puhelinluettelossa`)
   }
 
   const handleTyping = (event) => {
