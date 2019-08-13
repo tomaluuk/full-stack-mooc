@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Search from './Search';
 import Country from './Country';
 import axios from 'axios'
+import ViewInfo from './ViewInfo';
 
 const App = () => {
   const [ countries, setCountries ] = useState([])
@@ -25,7 +26,9 @@ const App = () => {
 
   const handleSearchQuery = (event) => {
     //console.log(event.target.value)
+    //if (searchQuery !== '' && shownCountries > 10)
     setSearchQuery(event.target.value)
+    
     setShowAll(searchQuery === '')
   }
 
@@ -39,9 +42,12 @@ const App = () => {
       <h2>Country information</h2>
       <Search searchHandler={handleSearchQuery} />
       <div>
-        <ul>
-          {rows()}
-        </ul>
+          {shownCountries.length === 1 ? (
+            <ViewInfo country={shownCountries[0]} />
+          ) : (
+            (searchQuery === '' || shownCountries.length <= 10) && rows()
+            )}
+          {searchQuery !== '' && shownCountries.length >= 10 && <p>Too many matches. Type more.</p>}
       </div>
     </div>
   )
