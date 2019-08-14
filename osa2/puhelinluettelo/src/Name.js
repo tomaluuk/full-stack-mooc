@@ -1,9 +1,12 @@
 import React from 'react';
 
-const Name = ( {name, number} ) => {
+const Name = ( {name, number, handleDelete} ) => {
 
     return (
-        <li>{name} {number}</li> 
+        <div>
+            <li>{name} {number}</li> 
+            <button id={name} onClick={handleDelete}>delete</button>
+        </div>
     );
   
 }

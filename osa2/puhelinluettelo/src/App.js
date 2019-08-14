@@ -3,17 +3,10 @@ import Name from './Name';
 import Search from './Search';
 import NewContactForm from './NewContactForm';
 import Contacts from './Contacts';
-import axios from 'axios'
+import contactService from './services/contactService'
 
 const App = () => {
-/* 
-  const [ contacts, setContacts] = useState([
-    { name: 'Arto Hellas', number: '040 654 9871' },
-    { name: 'Ada Lovelace', number: '39-44-5323523' },
-    { name: 'Dan Abramov', number: '12-43-234345' },
-    { name: 'Mary Poppendieck', number: '39-23-6423122' }
-  ]) 
-   */
+
   const [ contacts, setContacts] = useState([])
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
@@ -22,29 +15,30 @@ const App = () => {
 
   useEffect(() => {
     console.log('effect')
-    axios
-      .get('http://localhost:3001/contacts')
+    contactService
+      .getAll()
       .then(response => {
-        console.log('promise fulfilled')
+        //console.log('promise fulfilled')
         setContacts(response.data)
       })
   }, [])
-  console.log('render', contacts.length, 'contacts')
+  
+  //console.log('render', contacts.length, 'contacts')
 
   const addContact = (event) => {
     event.preventDefault()
 
-    const newListObject = {
+    const contactObject = {
       name: newName,
       number: newNumber,
     }
     
     const isDuplicate = contacts.find( (nameInList) => {      
-      return nameInList.id === newListObject.id
+      return nameInList.id === contactObject.id
     }) 
     
     if(!isDuplicate) {
-      setContacts(contacts.concat(newListObject))
+      setContacts(contacts.concat(contactObject))
       
       console.log('nimi lisätty luetteloon')
       console.log('form submitted', event.target)     
@@ -52,8 +46,16 @@ const App = () => {
       setNewNumber('')
     }
     else alert(`${newName} on jo puhelinluettelossa`)
+    
+    contactService
+    .create(contactObject)
+    .then(response => {
+      setContacts(contacts.concat(response.data))
+      setNewName('')
+      setNewNumber('')
+    })
   }
-
+    
   const shownContacts = showAll 
     ? contacts 
     : contacts.filter(contact => contact.name.toLowerCase().search(searchQuery.toLowerCase()) >= 0)
@@ -74,10 +76,31 @@ const App = () => {
     setShowAll(searchQuery === '')
   }
 
+  const handleDelete = (event) => {
+    console.log(event.target)
+    const contactName = event.target.id
+    const result = window.confirm("Delete " + contactName + " from your phonebook?")
+    console.log(result)
+    
+    const contactToBeDeleted = contacts.find(contact => contact.name === contactName)
+
+    if (result) {
+      contactService
+        .del(contactToBeDeleted.id)
+        .then(response => {
+          setContacts(contacts.filter(contact => contact.name !== contactName))
+        })
+        .catch (error => {
+          alert("Error while deleteing contact")
+        })
+    }
+  }
+
   const rows = () => shownContacts.map( person => 
     <Name key={person.name} 
           name={person.name} 
-          number={person.number} />
+          number={person.number} 
+          handleDelete={handleDelete}/>
   )
 
   return (
