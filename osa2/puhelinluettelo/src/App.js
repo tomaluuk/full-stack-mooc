@@ -32,28 +32,47 @@ const App = () => {
       name: newName,
       number: newNumber,
     }
-    
-    const isDuplicate = contacts.find( (nameInList) => {      
-      return nameInList.id === contactObject.id
+
+    const matchingContact = contacts.find( contactInList => {      
+      return contactInList.name === contactObject.name
     }) 
-    
-    if(!isDuplicate) {
+
+    console.log(matchingContact)
+
+    if(matchingContact === undefined) {
       setContacts(contacts.concat(contactObject))
       
       console.log('nimi lisätty luetteloon')
       console.log('form submitted', event.target)     
       setNewName('')
       setNewNumber('')
+
+      contactService
+        .create(contactObject)
+        .then(response => {
+          setContacts(contacts.concat(response.data))
+          setNewName('')
+          setNewNumber('')
+        })
     }
-    else alert(`${newName} on jo puhelinluettelossa`)
-    
-    contactService
-    .create(contactObject)
-    .then(response => {
-      setContacts(contacts.concat(response.data))
-      setNewName('')
-      setNewNumber('')
-    })
+    else {
+      const result = window.confirm(`${newName} on jo puhelinluettelossa. Haluatko päivittää kontaktin numeron?`)
+      if (result) {
+        const updatedContact = {...matchingContact, number: contactObject.number}
+        
+        console.log(updatedContact)
+        
+        contactService
+          .update(updatedContact.id, updatedContact)
+          .then(response => {
+            setContacts(contacts.map( contact => contact.id === updatedContact.id ? updatedContact : contact))
+        })
+          .catch(error => {
+        console.log("Error while updating contact", error)
+        })
+      }
+    }
+
   }
     
   const shownContacts = showAll 
