@@ -10,21 +10,21 @@ const App = () => {
   const [ showAll, setShowAll ] = useState(true)
 
   useEffect(() => {
-    console.log('effect')
+    //console.log('effect')
     axios
       .get('https://restcountries.eu/rest/v2/all')
       .then(response => {
-        console.log('promise fulfilled')
+        //console.log('promise fulfilled')
         setCountries(response.data)
       })
   }, [])
-  console.log('render', countries.length, 'countries')
+  //console.log('render', countries.length, 'countries')
 
   const shownCountries = showAll 
     ? countries 
     : countries.filter(country => country.name.toLowerCase().search(searchQuery.toLowerCase()) >= 0)
 
-  const handleSearchQuery = (event) => {
+  const handleSearchQuery = event => {
     //console.log(event.target.value)
     //if (searchQuery !== '' && shownCountries > 10)
     setSearchQuery(event.target.value)
@@ -34,7 +34,7 @@ const App = () => {
 
   const rows = () => shownCountries.map( country => 
     <Country key={country.name} 
-          name={country.name} />
+          country={country} />
   )
 
   return (

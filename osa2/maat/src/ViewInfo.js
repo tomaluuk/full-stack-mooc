@@ -2,7 +2,7 @@ import React from 'react';
 
 
 const viewInfo = ({ country }) => {
-  console.log(country)
+  //console.log(country)
 
   const langs = () => country.languages.map( language =>
     <li key={language.name}>{language.name}</li>
