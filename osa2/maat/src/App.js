@@ -3,6 +3,8 @@ import Search from './Search';
 import Country from './Country';
 import axios from 'axios'
 import ViewInfo from './ViewInfo';
+//import weatherService from './services/weatherService'
+
 
 const App = () => {
   const [ countries, setCountries ] = useState([])
@@ -18,7 +20,6 @@ const App = () => {
         setCountries(response.data)
       })
   }, [])
-  //console.log('render', countries.length, 'countries')
 
   const shownCountries = showAll 
     ? countries 
