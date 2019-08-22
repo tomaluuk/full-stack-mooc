@@ -48,7 +48,7 @@ const App = () => {
       
       /* console.log('nimi lisätty luetteloon')
       console.log('form submitted', event.target)      */
-
+      
       contactService
         .create(contactObject)
         .then(response => {
@@ -88,11 +88,16 @@ const App = () => {
             }, 5000)
         })
           .catch(error => {
-            setErrorMessage(`Error occurred while updating contact information: ${error}`)
+            setErrorMessage(`Contact "${contactObject.name}" already deleted from phonebook`)
             
+            setContacts(contacts.filter( contact => {
+              return contact.name !== contactObject.name
+            }))
+
             setTimeout( () => {
               setErrorMessage(null)
             }, 5000)
+
           })
       }
     }
