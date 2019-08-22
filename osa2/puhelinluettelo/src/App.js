@@ -18,7 +18,7 @@ const App = () => {
   const [ message, setMessage ] = useState(null)
 
   useEffect(() => {
-    console.log('effect')
+    //console.log('effect')
     contactService
       .getAll()
       .then(response => {
@@ -41,7 +41,7 @@ const App = () => {
       return contactInList.name === contactObject.name
     }) 
 
-    console.log(matchingContact)
+    //console.log(matchingContact)
 
     if(matchingContact === undefined) {
       setContacts(contacts.concat(contactObject))
@@ -70,11 +70,11 @@ const App = () => {
         
     }
     else {
-      const result = window.confirm(`${newName} on jo puhelinluettelossa. Haluatko päivittää kontaktin numeroksi "${contactObject.number}"?`)
+      const result = window.confirm(`${newName} is already in  the phonebook. Do you want to update "${contactObject.number}" as the contact number?`)
       if (result) {
         const updatedContact = {...matchingContact, number: contactObject.number}
         
-        console.log(updatedContact)
+        //console.log(updatedContact)
         
         contactService
           .update(updatedContact.id, updatedContact)
@@ -125,10 +125,10 @@ const App = () => {
   }
 
   const handleDelete = (event) => {
-    console.log(event.target)
+    //console.log(event.target)
     const contactName = event.target.id
     const result = window.confirm("Delete " + contactName + " from your phonebook?")
-    console.log(result)
+    //console.log(result)
     
     const contactToBeDeleted = contacts.find(contact => contact.name === contactName)
 
