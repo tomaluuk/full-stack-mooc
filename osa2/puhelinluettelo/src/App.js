@@ -4,6 +4,8 @@ import Search from './Search';
 import NewContactForm from './NewContactForm';
 import Contacts from './Contacts';
 import contactService from './services/contactService'
+import ErrorMessage from './ErrorMessage';
+import Message from './Message';
 
 const App = () => {
 
@@ -12,6 +14,8 @@ const App = () => {
   const [ newNumber, setNewNumber ] = useState('')
   const [ searchQuery, setSearchQuery ] = useState('')
   const [ showAll, setShowAll ] = useState(true)
+  const [ errorMessage, setErrorMessage ] = useState(null)
+  const [ message, setMessage ] = useState(null)
 
   useEffect(() => {
     console.log('effect')
@@ -42,10 +46,8 @@ const App = () => {
     if(matchingContact === undefined) {
       setContacts(contacts.concat(contactObject))
       
-      console.log('nimi lisätty luetteloon')
-      console.log('form submitted', event.target)     
-      setNewName('')
-      setNewNumber('')
+      /* console.log('nimi lisätty luetteloon')
+      console.log('form submitted', event.target)      */
 
       contactService
         .create(contactObject)
@@ -53,10 +55,22 @@ const App = () => {
           setContacts(contacts.concat(response.data))
           setNewName('')
           setNewNumber('')
+
+          setMessage(`"${contactObject.name}" added to phonebook!`)
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
         })
+        .catch(error => {
+          setErrorMessage(`Error occurred while creating contact: ${error}`)
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
+        })
+        
     }
     else {
-      const result = window.confirm(`${newName} on jo puhelinluettelossa. Haluatko päivittää kontaktin numeron?`)
+      const result = window.confirm(`${newName} on jo puhelinluettelossa. Haluatko päivittää kontaktin numeroksi "${contactObject.number}"?`)
       if (result) {
         const updatedContact = {...matchingContact, number: contactObject.number}
         
@@ -66,10 +80,20 @@ const App = () => {
           .update(updatedContact.id, updatedContact)
           .then(response => {
             setContacts(contacts.map( contact => contact.id === updatedContact.id ? updatedContact : contact))
+
+            setMessage(`Contact "${updatedContact.name}" updated successfully!`)
+            
+            setTimeout( () => {
+              setMessage(null)
+            }, 5000)
         })
           .catch(error => {
-        console.log("Error while updating contact", error)
-        })
+            setErrorMessage(`Error occurred while updating contact information: ${error}`)
+            
+            setTimeout( () => {
+              setErrorMessage(null)
+            }, 5000)
+          })
       }
     }
 
@@ -108,9 +132,19 @@ const App = () => {
         .del(contactToBeDeleted.id)
         .then(response => {
           setContacts(contacts.filter(contact => contact.name !== contactName))
+
+          setMessage(`Contact "${contactToBeDeleted.name}" deleted successfully!`)
+
+          setTimeout( () => {
+            setMessage(null)
+          }, 5000)
         })
         .catch (error => {
-          alert("Error while deleteing contact")
+          setErrorMessage(`Error occurred while deleteing contact: ${error}`)
+          
+          setTimeout( () => {
+            setErrorMessage(null)
+          }, 5000)
         })
     }
   }
@@ -124,11 +158,13 @@ const App = () => {
 
   return (
     <div>
-      <h2>Phonebook</h2>
+      <h1>Phonebook</h1>
+      <ErrorMessage message={errorMessage} />
+      <Message message={message} />
       <Search searchHandler={handleSearchQuery} />
-      <h3>Add a new contact</h3>
+      <h2>Add a new contact</h2>
       <NewContactForm nameHandler={handleName} numberHandler={handleNumber} addContact={addContact}/>
-      <h3>Numbers</h3>
+      <h2>Numbers</h2>
       <Contacts rows={rows} />
     </div>
   )
