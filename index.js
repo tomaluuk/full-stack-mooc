@@ -63,13 +63,41 @@ app.delete('/api/persons/:id', (request, response) => {
   response.status(204).end()
 })
 
-app.post('/persons', (request, response) => {
+app.post('/api/persons', (request, response) => {
   console.log(request.headers)
-  
   const contact = request.body
   console.log(contact)
 
-  response.json(contact)
+  if (contact.name === "") {
+    return response.status(400).json({
+      error: 'Name cannot be empty'
+    })
+  }
+
+  if (contact.number === "") {
+    return response.status(400).json({
+      error: 'Number cannot be empty'
+    })
+  }
+  
+  let exists = contacts.filter(c => contact.name === c.name).length > 0
+  console.log("contact exists:", exists)
+
+  if (exists) {
+    return response.status(400).json({
+      error: 'Name already exists in the phonebook'
+    })
+  }
+  
+  let newContact = [
+    {
+      "name": contact.name,
+      "number": contact.number,
+      "id": Math.random() * 10000000000
+    }
+  ]
+
+  response.json(newContact)
 })
 
 const port = 3001
