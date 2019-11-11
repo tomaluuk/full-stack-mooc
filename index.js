@@ -1,8 +1,13 @@
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
+const morgan = require('morgan')
 
 app.use(bodyParser.json())
+
+morgan.token('reqBody', req => JSON.stringify(req.body))
+
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :reqBody'))
 
 let contacts = [
   {
@@ -81,7 +86,7 @@ app.post('/api/persons', (request, response) => {
   }
   
   let exists = contacts.filter(c => contact.name === c.name).length > 0
-  console.log("contact exists:", exists)
+  // console.log("contact exists:", exists)
 
   if (exists) {
     return response.status(400).json({
